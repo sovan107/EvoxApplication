@@ -1,0 +1,6 @@
+security:
+  user:
+    password: sovan
+logging:
+  level:
+    org.springframework.security: DEBUG

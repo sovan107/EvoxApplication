@@ -10,23 +10,34 @@
         <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="resources/css/eventtracker.css">
-        <script src="resources/js/lib/angular/angular.min.js"></script>
-        <script src="resources/js/lib/angular/angular-route.min.js"></script>
-        <script src="resources/js/eventtracker.js"></script>
-        <script src="resources/js/routes.js"></script>
-        <script src="resources/js/controllers.js"></script>
-        
-        
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="resources/js/html5shiv.js"></script>
             <script src="resources/js/respond.min.js"></script>
         <![endif]-->
+        <style type="text/css">
+			[ng\:cloak], [ng-cloak], .ng-cloak {
+				display: none !important;
+			}
+		</style>
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <a class="navbar-brand" href="index.jsp">Event Tracker</a>
         </nav>
-     	 <div ng-view></div>
-    </body>
+     	 <body ng-cloak class="ng-cloak">
+	<div ng-controller="navigation" class="container tpad">
+		<ul class="nav nav-pills" role="tablist">
+			<li ng-class="{active:tab('home')}"><a href="#/">home</a></li>
+			<li><a href="#/login">login</a></li>
+			<li ng-show="authenticated"><a href="" ng-click="logout()">logout</a></li>
+		</ul>
+	</div>
+	<div ng-view class="container tpad"></div>
+		<script src="https://code.angularjs.org/1.4.2/angular.js" type="text/javascript"></script>
+		<script src="https://code.angularjs.org/1.4.2/angular-route.js"></script>
+        <script src="resources/js/eventtracker.js"></script>
+        <script src="resources/js/routes.js"></script>
+        <script src="resources/js/controllers.js"></script>
+</body>
 </html>
