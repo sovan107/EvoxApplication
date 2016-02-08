@@ -10,14 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -27,41 +33,60 @@ import org.springframework.web.util.WebUtils;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalAuthentication
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    private AuthenticationProvider authenticationProvider;
 
+	@Autowired
+	private AuthenticationSuccessHandler authenticationSuccessHandler;
+	
+	@Autowired
+	private AuthenticationFailureHandler authenticationFailureHandler;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.
-				authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login.html", "/")
-					.permitAll()
-					.and()
-				.authorizeRequests()
-                .antMatchers("/js/**", "/css/**", "/favicon.ico").permitAll().anyRequest().authenticated()
-                	.and()
-                	.csrf()
+			authorizeRequests()
+				.antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll()
+                .antMatchers("/js/**", "/css/**", "/favicon.ico").permitAll()
+            .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedPage("/errors/access-denied.html")
+            .and()
+                .csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and()
                 .logout().logoutSuccessUrl("/login.html?logout").and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+		
+		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
-	 @Autowired
-	 public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+	 @Override
+	 public void configure(AuthenticationManagerBuilder auth) throws Exception {
 //	        auth
 //	            .inMemoryAuthentication()
 //	                .withUser("user1").password("password1").roles("USER");
 		 System.out.println("--------------------------------  >AuthenticationManagerBuilder");
-		 auth.authenticationProvider(customAuthenticationProvider);
+		 auth.authenticationProvider(authenticationProvider);
 		 		
 	 }
-
+	 
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+	 
+	 @Bean
+		public AuthFilter authFilter() throws Exception {
+			AuthFilter authFilter = new AuthFilter();
+			authFilter.setAuthenticationManager(authenticationManager());
+			authFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+			authFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+			return authFilter;
+		}
 	private Filter csrfHeaderFilter() {
 		return new OncePerRequestFilter() {
 			@Override
@@ -89,5 +114,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
+	}
+	
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
 	}
 }

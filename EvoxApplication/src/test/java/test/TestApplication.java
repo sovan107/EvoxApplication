@@ -15,8 +15,8 @@ public class TestApplication {
 	}
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(TestApplication.class).properties(
-				"server.port=9999", "security.basic.enabled=false").run(args);
+//		new SpringApplicationBuilder(TestApplication.class).properties(
+//				"server.port=9999", "security.basic.enabled=false").run(args);
 	}
 
 }

@@ -42,22 +42,25 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 
 			var authenticate = function(credentials, callback) {
 
-				var headers = credentials ? {
-					authorization : "Basic "
-							+ btoa(credentials.username + ":"
-									+ credentials.password)
-				} : {};
-
-				$http.get('user', {
-					headers : headers
-				}).success(function(data) {
-					if (data.name) {
+				$http.post('user', {
+					'username': credentials.username,
+					'password': credentials.password
+				}).success(function (data, status, headers, config) {
+					
+					console.log("success : " + data);
+					
+//					if (data.name) {
+						
 						$rootScope.authenticated = true;
-					} else {
-						$rootScope.authenticated = false;
-					}
+//					} else {
+//						
+//						$rootScope.authenticated = false;
+//					}
 					callback && callback($rootScope.authenticated);
-				}).error(function() {
+				}).error(function (data, status, headers, config) {
+					
+					console.log("fail : " + data.status);
+					
 					$rootScope.authenticated = false;
 					callback && callback(false);
 				});
@@ -68,12 +71,14 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 			$scope.login = function() {
 				authenticate($scope.credentials, function(authenticated) {
 					if (authenticated) {
+						
 						console.log("Login succeeded")
 						$location.path("/main");
 						$scope.errorMessage = "";
 						$scope.error = false;
 						$rootScope.authenticated = true;
 					} else {
+						
 						console.log("Login failed")
 						$location.path("/login");
 						$scope.error = true;
@@ -85,7 +90,7 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 
 			$scope.logout = function() {
 				if($scope.authenticated){	
-					$http.post('logout', {}).success(function() {
+					$http.get('logout', {}).success(function() {
 						$rootScope.authenticated = false;
 						$location.path("/");
 					}).error(function(data) {
