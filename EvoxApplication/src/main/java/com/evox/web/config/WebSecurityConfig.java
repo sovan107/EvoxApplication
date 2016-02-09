@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -49,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		
 		http.
 			authorizeRequests()
-				.antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll()
+				.antMatchers("/index.html", "/home.html", "/login.html", "/", "/signup.html").permitAll()
                 .antMatchers("/js/**", "/css/**", "/favicon.ico").permitAll()
             .and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
@@ -60,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout().logoutSuccessUrl("/login.html?logout").and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 		
+		http.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class);
 		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 

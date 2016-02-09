@@ -1,4 +1,6 @@
-angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider, $httpProvider) {
+angular.module('EvoxApplication', [ 'ngRoute','ui.router','angular-storage','angular-jwt'])
+
+.config(function($routeProvider, $httpProvider, $stateProvider) {
 
 	$routeProvider.when('/', {
 		templateUrl : 'home.html',
@@ -9,8 +11,32 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 	}).when('/main', {
 		templateUrl : 'main.html',
 		controller : 'main'
+	}).when('/signUp', {
+		templateUrl : 'signup.html',
+		controller : 'signup'
 	}).otherwise('/');
 
+	$stateProvider.state('home', {
+	    url: '/',
+	    controller: 'home',
+	    templateUrl: 'home.html',
+	    data: {
+	      requiresLogin: true
+	    }
+	 });
+	
+	$stateProvider.state('login', {
+	    url: '/login',
+	    controller: 'navigation',
+	    templateUrl: 'login.html'
+	  });
+	
+	$stateProvider.state('signup', {
+	    url: '/signUp',
+	    controller: 'signup',
+	    templateUrl: 'signup.html'
+	  });
+	
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 }).run(['$rootScope', '$location', function($rootScope, $location) {
@@ -20,63 +46,53 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 
 	      console.log("Routechanged sessionId=" + $rootScope.SessionId);
 
-//	      if ($rootScope.SessionId == '' || $rootScope.SessionId == null) {
-//
-//	          // no logged user, we should be going to #login
-//	          if (next.templateUrl == "/login") {
-//	              // already going to #login, no redirect needed
-//	          } else {
-//	              // not going to #login, we should redirect now
-//	              $location.path("/login");
-//	          }
-//	      }
 	  });
 }]).controller(
 		'navigation',
 
-		function($rootScope, $scope, $http, $location, $route) {
+		function($rootScope, $scope, $http, $location, $route, store, $state) {
 
+			$scope.credentials = {};
 			$scope.tab = function(route) {
 				return $route.current && route === $route.current.controller;
 			};
 
 			var authenticate = function(credentials, callback) {
-
-				$http.post('user', {
-					'username': credentials.username,
-					'password': credentials.password
-				}).success(function (data, status, headers, config) {
+				
+				$http({
 					
-					console.log("success : " + data);
+					url: 'user',
+					method: 'POST',
+					data: {
+						'username': credentials.username,
+						'password': credentials.password
+					}
+				}).then(function(response){
 					
-//					if (data.name) {
-						
-						$rootScope.authenticated = true;
-//					} else {
-//						
-//						$rootScope.authenticated = false;
-//					}
+					console.log(response)
+					store.set('jwt', response.data);
+				    $state.go('home');
+				    $rootScope.authenticated = true;
 					callback && callback($rootScope.authenticated);
-				}).error(function (data, status, headers, config) {
-					
-					console.log("fail : " + data.status);
+				}, function(error){
 					
 					$rootScope.authenticated = false;
 					callback && callback(false);
-				});
-
+					alert(error.data);
+				})
 			}
 			
-			$scope.credentials = {};
+			
 			$scope.login = function() {
 				authenticate($scope.credentials, function(authenticated) {
 					if (authenticated) {
 						
-						console.log("Login succeeded")
+						console.log("Login succeeded");
 						$location.path("/main");
 						$scope.errorMessage = "";
 						$scope.error = false;
 						$rootScope.authenticated = true;
+						
 					} else {
 						
 						console.log("Login failed")
@@ -100,15 +116,72 @@ angular.module('EvoxApplication', [ 'ngRoute' ]).config(function($routeProvider,
 				} else {
 					$location.path("/login");
 				}
-			}
-
-		}).controller('home', function($scope, $http) {
+			};
 			
-			$scope.homePageMessage = "This is the home page before login"
-		}).controller('main', function($scope, $rootScope, $http) {
+			$scope.signUp = function() {
+				
+				console.log('Hello Signing Up');
+				$location.path('/signUp');
+			};
 			
-			$http.get('/resource/').success(function(data) {
-				$rootScope.SessionId=data.id;
-				$scope.greeting = data;
 		})
-});
+	.controller('home', function($scope, $http, store, jwtHelper) {
+			
+			$scope.homePageMessage = "This is the home page after login";
+			$scope.jwt = store.get('jwt');
+			$scope.isSignPage = true;
+				
+			
+		})
+	.controller('main', function($scope, $rootScope, $http, store) {
+			
+		$http({
+			url: '/api/resource/',
+			method: 'GET',
+			headers: {
+				'Authorization': 'Bearer '+store.get('jwt')
+			}
+		}).then(function(response){
+			
+			$rootScope.SessionId=response.id;
+			$scope.greeting = response.content;
+			
+		},function(error){
+			
+			alert(error.data);
+		})
+		
+		
+		
+		
+			$http.get('/api/resource/').success(function(data) {
+			
+			
+			})
+	})
+	.controller('signup', function($scope, $http, store, jwtHelper) {
+			
+			$scope.signUpDetails = {}
+			
+			$scope.signUp = function(){
+				
+				$http({
+					url: 'newUserRegistration',
+					method: 'POST',
+					headers: {
+						'Authentication': 'Bearer ' + store.get('jwt')
+					},
+					data:  $scope.signUpDetails
+				}).then(function(response){
+					
+					console.log(response);
+					$scope.error = true;
+					$scope.errorMessage = "Success";
+					
+				},function(error){
+					
+					alert(error.data);
+				})
+			}
+			
+		})

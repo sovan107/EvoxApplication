@@ -34,6 +34,11 @@
 			  	<span ng-show="authenticated">Logout</span>
   				<span ng-show="!authenticated">Login</span>
 			</button>
+			
+			<button ng-click="signUp()" type="button" 
+    			class="btn btn-default navbar-btn pull-right rmargin">
+			  	<span>Sign Up</span>
+			</button>
             
     	</span>
 </nav>
@@ -42,6 +47,7 @@
 	<script src="https://code.angularjs.org/1.4.2/angular-route.js"></script>
 	<script src="js/angular-storage.min.js" type="text/javascript"> </script>
     <script src="js/angular-jwt.min.js" type="text/javascript"> </script>
+    <script src="js/angular-ui-router.min.js" type="text/javascript"> </script>
 	<script src="js/app.js"></script>
 </body>
 </html>

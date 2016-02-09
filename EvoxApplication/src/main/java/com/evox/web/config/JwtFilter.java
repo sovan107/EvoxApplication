@@ -23,6 +23,9 @@ public class JwtFilter extends GenericFilterBean {
         final HttpServletRequest request = (HttpServletRequest) req;
 
         final String authHeader = request.getHeader("Authorization");
+        String accpet = request.getHeader("Accept");
+        
+        System.out.println("--------------------------------------- >  " + authHeader + " : " + accpet);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new ServletException("Missing or invalid Authorization header.");
         }
@@ -30,7 +33,7 @@ public class JwtFilter extends GenericFilterBean {
         final String token = authHeader.substring(7); // The part after "Bearer "
 
         try {
-            final Claims claims = Jwts.parser().setSigningKey("secretkey")
+            final Claims claims = Jwts.parser().setSigningKey("secretKey")
                 .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
         }

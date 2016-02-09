@@ -12,6 +12,8 @@ public class User {
 	private String userName;
 	@NotBlank(message = "Invalid Password")
 	private String password;
+	@NotBlank(message = "Invalid Company Name")
+	private String company;
 	
 	public String getUserName() {
 		return userName;
@@ -25,5 +27,12 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
+	
 	
 }
