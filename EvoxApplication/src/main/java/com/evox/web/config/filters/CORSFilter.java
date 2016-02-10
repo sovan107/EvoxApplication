@@ -1,4 +1,4 @@
-package com.evox.web.config;
+package com.evox.web.config.filters;
 
 import java.io.IOException;
 

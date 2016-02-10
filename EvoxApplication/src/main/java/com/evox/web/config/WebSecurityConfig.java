@@ -32,6 +32,8 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
+import com.evox.web.config.filters.AuthFilter;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -61,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout().logoutSuccessUrl("/login.html?logout").and()
 				.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 		
-		http.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class);
+//		http.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class);
 		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 

@@ -1,4 +1,4 @@
-package com.evox.web.config;
+package com.evox.web.config.handlers;
 import java.io.IOException;
 
 import javax.servlet.ServletException;

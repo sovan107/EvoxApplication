@@ -1,4 +1,4 @@
-package com.evox.web.config;
+package com.evox.web.config.filters;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 
-public class JwtFilter extends GenericFilterBean {
+public class JWTFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(final ServletRequest req,

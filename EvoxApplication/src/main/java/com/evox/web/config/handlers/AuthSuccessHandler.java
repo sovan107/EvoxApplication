@@ -1,5 +1,5 @@
 
-package com.evox.web.config;
+package com.evox.web.config.handlers;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 

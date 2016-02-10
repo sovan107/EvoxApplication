@@ -1,4 +1,4 @@
-package com.evox.web.config;
+package com.evox.web.config.filters;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
