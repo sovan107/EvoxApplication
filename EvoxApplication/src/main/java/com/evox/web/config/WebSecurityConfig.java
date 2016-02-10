@@ -69,10 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 	 @Override
 	 public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//	        auth
-//	            .inMemoryAuthentication()
-//	                .withUser("user1").password("password1").roles("USER");
-		 System.out.println("--------------------------------  >AuthenticationManagerBuilder");
+		 
 		 auth.authenticationProvider(authenticationProvider);
 		 		
 	 }
@@ -84,31 +81,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	}
 	 
 	 @Bean
-		public AuthFilter authFilter() throws Exception {
-			AuthFilter authFilter = new AuthFilter();
-			authFilter.setAuthenticationManager(authenticationManager());
-			authFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-			authFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-			return authFilter;
-		}
+	public AuthFilter authFilter() throws Exception {
+		AuthFilter authFilter = new AuthFilter();
+		authFilter.setAuthenticationManager(authenticationManager());
+		authFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+		authFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+		
+		return authFilter;
+	}
+	 
 	private Filter csrfHeaderFilter() {
 		return new OncePerRequestFilter() {
 			@Override
 			protected void doFilterInternal(HttpServletRequest request,
 					HttpServletResponse response, FilterChain filterChain)
 					throws ServletException, IOException {
-				CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class
-						.getName());
+				
+				CsrfToken csrf = (CsrfToken) request
+						.getAttribute(CsrfToken.class.getName());
+				
 				if (csrf != null) {
+					
 					Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
 					String token = csrf.getToken();
 					if (cookie == null || token != null
 							&& !token.equals(cookie.getValue())) {
+						
 						cookie = new Cookie("XSRF-TOKEN", token);
 						cookie.setPath("/");
 						response.addCookie(cookie);
 					}
 				}
+				
 				filterChain.doFilter(request, response);
 			}
 		};

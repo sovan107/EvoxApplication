@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.evox.web.model.User;
+import com.evox.web.model.UserModel;
 import com.evox.web.services.UserServices;
 
 @Service
@@ -33,7 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		// Catch the password
 		String password = (String) authentication.getCredentials();
 		
-		User user = (User) userService.findUserByUserName(userName);
+		UserModel user = (UserModel) userService.findUserByUserName(userName);
 		
 		if(user == null){
 			

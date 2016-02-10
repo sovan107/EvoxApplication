@@ -1,8 +1,8 @@
-package com.evox.web.services;
+package com.evox.web.dao;
 
 import com.evox.web.model.UserModel;
 
-public interface UserServices {
+public interface UserDao {
 
 	UserModel findUserByUserName(String userName);
 

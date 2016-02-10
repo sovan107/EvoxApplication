@@ -21,8 +21,9 @@ EvoxApp
 					url: 'user',
 					method: 'POST',
 					data: {
-						'username': credentials.username,
-						'password': credentials.password
+						'userName': credentials.username,
+						'password': credentials.password,
+						'company': credentials.company
 					}
 				}).then(function(response){
 					
@@ -96,7 +97,7 @@ EvoxApp
 	.controller('main', function($scope, $rootScope, $http, store, $location) {
 			
 		$http({
-			url: '/api/resource/',
+			url: '/api/home/',
 			method: 'GET',
 			headers: {
 				'Authorization': 'Bearer '+store.get('jwt')

@@ -1,12 +1,24 @@
 package com.evox.web.model;
 
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.hibernate.validator.constraints.NotBlank;
 
-public class User {
+@Entity(name="user")
+public class UserModel implements Serializable{
 
-	public User(){
+	private static final long serialVersionUID = 2193176517499548985L;
+	public UserModel(){
 		
 	}
+	
+	@Id
+	@GeneratedValue
+	private Long id;
 	
 	@NotBlank(message = "Invalid UserName")
 	private String userName;
@@ -32,6 +44,12 @@ public class User {
 	}
 	public void setCompany(String company) {
 		this.company = company;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	

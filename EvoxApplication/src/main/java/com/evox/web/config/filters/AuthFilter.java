@@ -16,7 +16,7 @@ import org.springframework.validation.Validator;
 
 import com.evox.web.exceptions.APIException;
 import com.evox.web.exceptions.ExceptionMessages;
-import com.evox.web.model.LoginDTO;
+import com.evox.web.model.UserModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -31,12 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * <pre>
  * 	{
- * 		"username":"usernamr",
+ * 		"username":"username",
  * 		"password":"password"
  * 	}
  * </pre>
  * 
- * @author Pradipta
  */
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -59,25 +58,27 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request,
 			HttpServletResponse response) throws AuthenticationException {
 
-		LoginDTO loginDTO;
+//		LoginDTO loginDTO;
+		UserModel user;
 
 		try {
-			loginDTO = new ObjectMapper().readValue(request.getReader(), LoginDTO.class);
+//			loginDTO = new ObjectMapper().readValue(request.getReader(), LoginDTO.class);
+			user = new ObjectMapper().readValue(request.getReader(), UserModel.class);
 		} catch (Exception e) {
 			throw new APIException(ExceptionMessages.INVALID_LOGIN_JSON,
 					HttpStatus.BAD_REQUEST);
 		}
 
 		// If LoginDTO has validation errors
-		BindException bindException = new BindException(loginDTO, "Login DTO");
-		validator.validate(loginDTO, bindException);
+		BindException bindException = new BindException(user, "User Model");
+		validator.validate(user, bindException);
 		if (bindException != null && bindException.hasErrors()) {
 			throw new APIException(bindException.getFieldError().getDefaultMessage(),
 					HttpStatus.BAD_REQUEST);
 		}
 		
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
-				loginDTO.getUsername().trim(), loginDTO.getPassword());
+				user.getUserName().trim(), user.getPassword());
 
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 		
