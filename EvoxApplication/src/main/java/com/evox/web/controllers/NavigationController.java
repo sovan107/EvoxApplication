@@ -13,15 +13,14 @@ public class NavigationController {
 
 	@RequestMapping(value="/logout", method=RequestMethod.GET)
 	public void logout(){
-		System.out.println("Log out called");
 	}
 	
-	@RequestMapping("/api/home")
+	@RequestMapping("/api/main")
 	public Map<String, Object> home() {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("id", UUID.randomUUID().toString());
-		model.put("content", "Hello World");
+		model.put("content", "Main page : Hello World");
 		
 		return model;
 	}

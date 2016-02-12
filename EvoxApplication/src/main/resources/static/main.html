@@ -3,7 +3,13 @@
 <!-- Login Section Starts-->
         <div class="container tpad">
             <div class="row">
+            
+            	<p> Auth Value (Is auth ??) :  {{authenticated}}</p>
 				<div ng-show="authenticated">
+					<h2> MAIN PAGE</h2>
+					<b>-----------------------------------------------------------------------</b>
+					
+					
 					<p>The ID is {{greeting.id}}</p>
 					<p>The content is {{greeting.content}}</p>
 					<p>The JWT code is {{jwt}}</p>

@@ -58,11 +58,9 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request,
 			HttpServletResponse response) throws AuthenticationException {
 
-//		LoginDTO loginDTO;
 		UserModel user;
 
 		try {
-//			loginDTO = new ObjectMapper().readValue(request.getReader(), LoginDTO.class);
 			user = new ObjectMapper().readValue(request.getReader(), UserModel.class);
 		} catch (Exception e) {
 			throw new APIException(ExceptionMessages.INVALID_LOGIN_JSON,

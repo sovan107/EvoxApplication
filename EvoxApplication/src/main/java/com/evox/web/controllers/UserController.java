@@ -1,3 +1,7 @@
+/*
+ * This is the user controller, which deals with all aspects related to User of evox application
+ * */
+
 package com.evox.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +20,15 @@ public class UserController {
 	@Autowired
 	UserServices userService;
 	
-	
 	@RequestMapping(value = "/newUserRegistration", method = RequestMethod.POST)
 	public @ResponseBody UserModel saveNewUser(@RequestBody UserModel user){
 		
-		System.out.println("User Registration Controller");
-		
 		UserModel retrivedUser = userService.findUserByUserName(user.getUserName());
-		if(retrivedUser.getUserName().equals(user.getUserName())){
+		
+		if(retrivedUser != null && 
+				retrivedUser.getUserName().equals(user.getUserName())){
 			
-			return user;
+			return retrivedUser;
 		} else {
 			
 			userService.saveUser(user);

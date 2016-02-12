@@ -2,6 +2,7 @@ package com.evox.web.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,10 +22,15 @@ public class UserModel implements Serializable{
 	private Long id;
 	
 	@NotBlank(message = "Invalid UserName")
+	@Column(name="user_name")
 	private String userName;
+	
 	@NotBlank(message = "Invalid Password")
+	@Column(name="password")
 	private String password;
+
 	@NotBlank(message = "Invalid Company Name")
+	@Column(name="company")
 	private String company;
 	
 	public String getUserName() {

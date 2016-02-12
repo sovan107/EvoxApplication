@@ -1,8 +1,16 @@
-<h1>Greeting</h1>
+
 <div  ng-show="!authenticated">
+
+	<h2>HOME PAGE</h2>
+	<b>-----------------------------------------------------------------------</b>
+	
 	<h2><p>Login to see your greeting</p></h2>
 </div>
 <div ng-show="authenticated">
+	<h2>HOME PAGE</h2>
+	<b>-----------------------------------------------------------------------</b>
+	
+	
 	<h3><p>{{homePageMessage}}</p></h3>
 	<p>Security Token : {{jwt}}</p>
 </div>

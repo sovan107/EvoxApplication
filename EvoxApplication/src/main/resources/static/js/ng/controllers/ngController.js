@@ -97,13 +97,11 @@ EvoxApp
 	.controller('main', function($scope, $rootScope, $http, store, $location) {
 			
 		$http({
-			url: '/api/home/',
+			url: '/api/main/',
 			method: 'GET',
-			headers: {
-				'Authorization': 'Bearer '+store.get('jwt')
-			}
 		}).then(function(response){
 			
+			$rootScope.authenticated = true;
 			console.log(response.data);
 			$rootScope.SessionId=response.data.id;
 			$scope.greeting = response.data;

@@ -1,5 +1,8 @@
 package com.evox.web.dao.impl;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import com.evox.web.dao.AbstractDao;
@@ -12,15 +15,16 @@ public class UserDaoImpl extends AbstractDao implements UserDao{
 	@Override
 	public UserModel findUserByUserName(String userName) {
 		
-		if(userName.equals("mindfire")){
-			
-			UserModel user = new UserModel();
-			
-			user.setUserName("mindfire");
-			user.setPassword("mfs");
-			user.setCompany("1234");
-			
-			return user;
+		Query query = getSession()
+				.createQuery("FROM user u WHERE u.userName LIKE :userName");
+		
+		query.setParameter("userName", userName);
+		
+		@SuppressWarnings("unchecked")
+		List<UserModel> user = query.list();
+		
+		if(user.size() > 0){
+			return user.get(0);
 		} else {
 			
 			return null;
@@ -30,13 +34,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao{
 	@Override
 	public UserModel saveUser(UserModel user) {
 		
-		UserModel newUser = new UserModel();
-		
-		newUser.setUserName(user.getUserName());
-		newUser.setCompany(user.getCompany());
-		
-		return newUser;
+		persist(user);
+		return user;
 	}
-
-	
 }
