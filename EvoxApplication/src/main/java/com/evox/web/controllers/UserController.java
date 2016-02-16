@@ -5,35 +5,27 @@
 package com.evox.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.evox.web.model.UserModel;
-import com.evox.web.services.UserServices;
+import com.evox.web.model.User;
+import com.evox.web.services.impl.UserDetailsService;
 
 @RestController
 public class UserController {
 
 	@Autowired
-	UserServices userService;
+	UserDetailsService userServices;
 	
 	@RequestMapping(value = "/newUserRegistration", method = RequestMethod.POST)
-	public @ResponseBody UserModel saveNewUser(@RequestBody UserModel user){
-		
-		UserModel retrivedUser = userService.findUserByUserName(user.getUserName());
-		
-		if(retrivedUser != null && 
-				retrivedUser.getUserName().equals(user.getUserName())){
-			
-			return retrivedUser;
-		} else {
-			
-			userService.saveUser(user);
-		}
-		
+	public @ResponseBody UserDetails saveNewUser(@RequestBody User user){
+	
+		userServices.saveUser(user);
+
 		return user;
 	}
 }

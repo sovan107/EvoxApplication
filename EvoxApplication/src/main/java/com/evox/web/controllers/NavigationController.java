@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class NavigationController {
 
-	@RequestMapping(value="/logout", method=RequestMethod.GET)
-	public void logout(){
+	
+	@RequestMapping(value = "/logoutUrl", method = RequestMethod.POST)
+	public void logout() {
+		
+		System.out.println("Logout");
 	}
 	
 	@RequestMapping("/api/main")
@@ -21,6 +24,15 @@ public class NavigationController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("id", UUID.randomUUID().toString());
 		model.put("content", "Main page : Hello World");
+		
+		return model;
+	}
+	@RequestMapping("/api/goToHome")
+	public Map<String, Object> afterLogin() {
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("id", UUID.randomUUID().toString());
+		model.put("content", "After : This page is shown after login");
 		
 		return model;
 	}

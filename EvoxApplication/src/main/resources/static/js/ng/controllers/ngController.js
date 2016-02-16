@@ -2,7 +2,7 @@ EvoxApp
 
 	.controller(
 		// This handles the loginPage controller
-		'navigation',
+		'login',
 
 		function($rootScope, $scope, $http, $location, $route, store, $state) {
 			
@@ -21,16 +21,17 @@ EvoxApp
 					url: 'user',
 					method: 'POST',
 					data: {
-						'userName': credentials.username,
-						'password': credentials.password,
-						'company': credentials.company
+						'username': credentials.username,
+						'password': credentials.password
 					}
-				}).then(function(response){
+				}).then(function(response, headers){
+					
 					
 					// If the login procedure return success, store the jwt token from response
-					store.set('jwt', response.data);
+					store.set('jwt',response.data);
 				    $rootScope.authenticated = true;
 					callback && callback($rootScope.authenticated);
+					
 				}, function(error){
 					
 					$rootScope.authenticated = false;
@@ -46,7 +47,7 @@ EvoxApp
 					
 					if (authenticated) {
 						
-						$location.path("/main");							// Redirect to main landing page
+						$location.path("/goToHome");						// Redirect to main landing page
 						$scope.errorMessage = "";							// Make the errorMessage field on login page to blank
 						$scope.error = false;								// Set error flag to false
 						$rootScope.authenticated = true;					// Set the root scope variable as authenticated to be used  through out the application
@@ -66,13 +67,15 @@ EvoxApp
 				
 				if($scope.authenticated){
 					
-					$http.get('logout', {}).success(function() {
+					$http.post('logoutUrl', {}).success(function() {
 						
 						$rootScope.authenticated = false;
 						store.set('jwt', '');
 						$location.path("/");
+						
 					}).error(function(data) {
 						
+						$location.path("/");
 						store.set('jwt', '');
 						$rootScope.authenticated = false;
 					});
@@ -89,16 +92,26 @@ EvoxApp
 			};
 			
 		})
-	.controller('home', function($scope, $http, store, jwtHelper) {
+	.controller('landing', function($http, $location, $rootScope) {
 			
-			$scope.homePageMessage = "This is the home page after login";
+		$http({
+			url: '/api/goToHome/',
+			method: 'GET'
+		}).then(function(response){
+			$rootScope.authenticated = true;
+			$location.path("/goToHome");
+			
+		},function(error){
+			$rootScope.authenticated = false;
+			$location.path("/home");
+		})
 			
 		})
 	.controller('main', function($scope, $rootScope, $http, store, $location) {
 			
 		$http({
 			url: '/api/main/',
-			method: 'GET',
+			method: 'GET'
 		}).then(function(response){
 			
 			$rootScope.authenticated = true;
@@ -111,6 +124,10 @@ EvoxApp
 			
 			$location.path("/");
 		})
+	})
+	.controller('home', function($scope) {
+			
+		$scope.homePageMessage = "This is the home  page of the application"
 	})
 	.controller('signup', function($scope, $http, store, jwtHelper) {
 			

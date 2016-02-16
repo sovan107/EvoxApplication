@@ -11,16 +11,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.evox.web.model.UserModel;
+import com.evox.web.model.User;
 import com.evox.web.services.UserServices;
 
 @Service
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired 
-	private UserServices userService;
+	private UserDetailsService userService;
 	
 	@Override
 	public Authentication authenticate(Authentication authentication)
@@ -33,14 +34,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		// Catch the password
 		String password = (String) authentication.getCredentials();
 		
-		UserModel user = (UserModel) userService.findUserByUserName(userName);
+		User user = (User) userService.loadUserByUsername(userName);
 		
 		if(user == null){
 			
 			throw new BadCredentialsException("[CustomAuthenticationProvider] "
 					+ "Authentication Failed!!! Reason: User is not exist: [" + userName + "]");
 		}
+		
+		System.out.println("------------------------- > > > > >  " + user.getPassword() +" : "+ password);
 		 if (user.getPassword().equals(password)) {
+			 
+			 
+			 
 		        System.out.println("[CustomAuthenticationProvider] - Authentication Success!!!");
 
 		        List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();

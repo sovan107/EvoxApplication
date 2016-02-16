@@ -13,7 +13,7 @@
                         <form class="form-signin" ng-submit="signUp()">
                             <div class="form-group">
 								<label for="username">Username:</label> <input type="text"
-									class="form-control" id="username" name="username" ng-model="signUpDetails.userName"/>
+									class="form-control" id="username" name="username" ng-model="signUpDetails.username"/>
 							</div>
                             <div class="form-group">
 								<label for="password">Password:</label> <input type="password"
@@ -23,13 +23,13 @@
 								<label for="password">Confirm Password:</label> <input type="password"
 									class="form-control" id="confirmPassword" name="ConfirmPassword" ng-model="signUpDetails.confirmPassword"/>
 							</div>
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label for="password">Company:</label> <input type="text"
 									class="form-control" id="company" name="company" ng-model="signUpDetails.company"/>
-							</div>
+							</div> -->
                             <button class="btn btn-lg btn-primary btn-block" type="submit" 
-                            		ng-disabled="!signUpDetails.userName || !signUpDetails.password ||
-                            		 !signUpDetails.confirmPassword || !signUpDetails.company">
+                            		ng-disabled="!signUpDetails.username || !signUpDetails.password ||
+                            		 !signUpDetails.confirmPassword">
                                 Sign Up
                             </button>
                             <a href="#" class="pull-right need-help">

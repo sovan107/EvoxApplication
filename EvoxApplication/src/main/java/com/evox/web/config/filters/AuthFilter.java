@@ -1,22 +1,27 @@
 package com.evox.web.config.filters;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 
-import com.evox.web.exceptions.APIException;
-import com.evox.web.exceptions.ExceptionMessages;
-import com.evox.web.model.UserModel;
+import com.evox.web.config.security.UserAuthentication;
+import com.evox.web.model.User;
+import com.evox.web.services.impl.TokenAuthenticationService;
+import com.evox.web.services.impl.UserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -42,44 +47,42 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	@Autowired
 	private Validator validator;
 	
+	private final TokenAuthenticationService tokenAuthenticationService;
+	private final UserDetailsService userDetailsService;
 	/**
 	 * The constructor sets the login URL. The login url is <code>/login</code><br>
 	 * The accepted http method is <code>POST</code>
 	 */
-	public AuthFilter() {
-		super(new AntPathRequestMatcher("/user", "POST"));
+	public AuthFilter(String urlMapping, TokenAuthenticationService tokenAuthenticationService,
+			UserDetailsService userDetailsService) {
+		
+		super(new AntPathRequestMatcher(urlMapping, "POST"));
+		this.userDetailsService = userDetailsService;
+		this.tokenAuthenticationService = tokenAuthenticationService;
 	}
 
-	/**
-	 * Attempts authentication by parsing the JSON login object and creating an
-	 * authentication token which is passed on to authentication manager.
-	 */
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request,
-			HttpServletResponse response) throws AuthenticationException {
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws AuthenticationException, IOException, ServletException {
 
-		UserModel user;
+		final User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+		final UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(
+				user.getUsername(), user.getPassword());
+		return getAuthenticationManager().authenticate(loginToken);
+	}
+	
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+			FilterChain chain, Authentication authentication) throws IOException, ServletException {
 
-		try {
-			user = new ObjectMapper().readValue(request.getReader(), UserModel.class);
-		} catch (Exception e) {
-			throw new APIException(ExceptionMessages.INVALID_LOGIN_JSON,
-					HttpStatus.BAD_REQUEST);
-		}
+		// Lookup the complete User object from the database and create an Authentication for it
+		final User authenticatedUser = userDetailsService.loadUserByUsername(authentication.getName());
+		final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
 
-		// If LoginDTO has validation errors
-		BindException bindException = new BindException(user, "User Model");
-		validator.validate(user, bindException);
-		if (bindException != null && bindException.hasErrors()) {
-			throw new APIException(bindException.getFieldError().getDefaultMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
-		
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
-				user.getUserName().trim(), user.getPassword());
+		// Add the custom token as HTTP header to the response
+		tokenAuthenticationService.addAuthentication(response, userAuthentication);
 
-		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
-		
-		return this.getAuthenticationManager().authenticate(authRequest);
+		// Add the authentication to the Security context
+		SecurityContextHolder.getContext().setAuthentication(userAuthentication);
 	}
 }

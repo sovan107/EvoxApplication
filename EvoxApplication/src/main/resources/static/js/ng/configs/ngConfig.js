@@ -10,13 +10,16 @@ EvoxApp
 				controller : 'home'
 			}).when('/login', {
 				templateUrl : 'login.html',
-				controller : 'navigation'
+				controller : 'login'
 			}).when('/main', {
 				templateUrl : 'main.html',
 				controller : 'main'
 			}).when('/signUp', {
 				templateUrl : 'signup.html',
 				controller : 'signup'
+			}).when('/goToHome', {
+				templateUrl : 'landing.html',
+				controller : 'landing'
 			}).otherwise('/');
 
 			$stateProvider.state('home', {
@@ -30,7 +33,7 @@ EvoxApp
 
 			$stateProvider.state('login', {
 				url : '/login',
-				controller : 'navigation',
+				controller : 'login',
 				templateUrl : 'login.html'
 			});
 
@@ -53,7 +56,7 @@ EvoxApp
 		.factory(
 					'authInterceptor',
 					
-						function($rootScope, $q, $window, store) {
+						function($rootScope, $q, $window, store, $location) {
 							return {
 								request : function(config) {
 									config.headers = config.headers || {};
@@ -66,36 +69,10 @@ EvoxApp
 								response : function(response) {
 									if (response.status === 401) {
 										// handle the case where the user is not authenticated
+										$location.path("/");
 									}
 									return response || $q.when(response);
 								}
 							};
 					}
 				);
-
-// EvoxApp
-//	
-// .run(
-//			
-// [
-// '$rootScope',
-// '$location',
-// 'store',
-//			 	
-// function($rootScope, $location, store) {
-//
-// // register listener to watch route changes
-// $rootScope.$on("$routeChangeStart", function(event, next, current) {
-//				
-// console.log(next);
-// //TODO : Check if the jwt is set or not, if not set, redirect user to login
-// page
-// if(store.get('jwt') !== ''){
-//							  
-// $location.path('/main');
-// } else {
-//							  
-// $location.path('/');
-// }
-// });
-// }]);
