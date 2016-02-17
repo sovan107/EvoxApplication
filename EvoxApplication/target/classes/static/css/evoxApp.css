@@ -90,3 +90,12 @@ html, body{
     display: block;
     margin-top: 10px;
 }
+.business-header {
+    height: 400px;
+    color: #fff;
+    background: url('http://evoxtelevision.com/sites/default/files/styles/main_slideshow/public/brandingslide.png?itok=MUeuuj56') center center no-repeat scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}

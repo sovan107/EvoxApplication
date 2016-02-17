@@ -1,16 +1,97 @@
 
-<div  ng-show="!authenticated">
+<!-- <div ng-show="!authenticated">
 
-	<h2>HOME PAGE</h2>
-	<b>-----------------------------------------------------------------------</b>
-	
-	<h2><p>Login to see your greeting</p></h2>
+	<h2>Welcome!!</h2>
+	<hr />
+	<h2>
+		
+	</h2>
+	<span ng-controller="login">
+		<p>
+			<a class="btn btn-default btn-lg" ng-click="signUp()">Sign
+				Up &raquo;</a>
+		</p>
+	</span>
 </div>
-<div ng-show="authenticated">
-	<h2>HOME PAGE</h2>
-	<b>-----------------------------------------------------------------------</b>
-	
-	
-	<h3><p>{{homePageMessage}}</p></h3>
-	<p>Security Token : {{jwt}}</p>
-</div>
+ -->
+
+
+    <!-- Image Background Page Header -->
+    <!-- Note: The background image is set within the business-casual.css file. -->
+    <header class="business-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="tagline">Evox Profit Calculator</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>What this does</h2>
+                <p>Calculate the net gain you earn on each product you sell in e-commerce world. </p>
+                <p>To get to know about the application and know how much your profit is, Sign up now. </p>
+                <span ng-controller="login">
+	                <p>
+	                    <a class="btn btn-default btn-lg" ng-click="signUp()"> Sign Up&raquo;</a>
+	                </p>
+                </span>
+            </div>
+            <div class="col-sm-4">
+                <h2>Contact Us</h2>
+                <address>
+                    <strong>Some Adderss</strong>
+                    <br>3481 Gateway Road 
+                    <br>Beverly Hills, CA 90210
+                    <br>
+                </address>
+                <address>
+                    <abbr title="Phone">P:</abbr>(123) 456-7890
+                    <br>
+                    <abbr title="Email">E:</abbr> <a href="mailto:#">name@example.com</a>
+                </address>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <img class="img-circle img-responsive img-center" src="/img/profit-loss-risk.jpg" alt="">
+                <h2>Marketing Box #1</h2>
+                <p>These marketing boxes are a great place to put some information. These can contain summaries of what the company does, promotional information, or anything else that is relevant to the company. These will usually be below-the-fold.</p>
+            </div>
+            <div class="col-sm-4">
+                <img class="img-circle img-responsive img-center" src="/img/profit-loss-risk.jpg" alt="">
+                <h2>Marketing Box #2</h2>
+                <p>The images are set to be circular and responsive. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+            </div>
+            <div class="col-sm-4">
+                <img class="img-circle img-responsive img-center" src="/img/profit-loss-risk.jpg" alt="">
+                <h2>Marketing Box #3</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Evox Televison 2016</p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </footer>
+
+    </div>
