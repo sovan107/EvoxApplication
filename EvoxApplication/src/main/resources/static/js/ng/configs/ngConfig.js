@@ -20,6 +20,9 @@ EvoxApp
 			}).when('/goToHome', {
 				templateUrl : 'landing.html',
 				controller : 'landing'
+			}).when('/admin', {
+				templateUrl : 'admin.html',
+				controller : 'admin'
 			}).otherwise('/');
 
 			$stateProvider.state('home', {

@@ -6,13 +6,18 @@ EvoxApp
 
 		function($rootScope, $scope, $http, $location, $route, store, $state) {
 			
+			$scope.isCollapsed = true;
 			// On load make the login field model blank
 			$scope.credentials = {};
 			
 			$scope.tab = function(route) {
 				return $route.current && route === $route.current.controller;
 			};
-
+			
+			$scope.toggleCollapse = function(){
+				console.log("JHello Wirkd");
+				$scope.isCollapsed = !$scope.isCollapsed;
+		    }
 			//This make the rest call to the server and authenticate the user
 			var authenticate = function(credentials, callback) {
 				
@@ -44,6 +49,7 @@ EvoxApp
 				
 				// Call the autheticate method to make post request to server with given credentials
 				authenticate($scope.credentials, function(authenticated) {
+					
 					
 					if (authenticated) {
 						
@@ -85,12 +91,6 @@ EvoxApp
 				}
 			};
 			
-			$scope.signUp = function() {
-				
-				console.log('Hello Signing Up');
-				$location.path('/signUp');
-			};
-			
 		})
 	.controller('landing', function($http, $location, $rootScope) {
 			
@@ -124,10 +124,6 @@ EvoxApp
 			
 			$location.path("/");
 		})
-	})
-	.controller('home', function($scope) {
-			
-		$scope.homePageMessage = "This is the home  page of the application"
 	})
 	.controller('signup', function($scope, $http, store, jwtHelper) {
 			
